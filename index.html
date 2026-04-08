@@ -356,7 +356,7 @@ function render(){
 const c=document.getElementById(‘days’);c.innerHTML=’’;
 D.forEach(day=>{
 const evs=getEvs(day,af);if(!evs.length)return;
-const dots=[…new Set(evs.map(e=>e.t))].map(t=>`<span class="dot" style="background:${TC[t]||'#9E9E9E'}"></span>`).join(’’);
+const dots=[...new Set(evs.map(e=>e.t))].map(t=>`<span class="dot" style="background:${TC[t]||'#9E9E9E'}"></span>`).join(’’);
 const title=getTitle(day,af);
 const card=document.createElement(‘div’);card.className=‘dc’;
 card.innerHTML=`<div class="dh" onclick="this.closest('.dc').classList.toggle('open')"> <div style="flex:1;min-width:0"> <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"> <span style="font-size:15px;font-weight:600;color:#1B2A4A;white-space:nowrap">${day.d}（${day.w}）</span> <span style="font-size:13px;font-weight:500;color:#333">${title}</span> </div> <div class="dm"> <span class="dl"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="flex-shrink:0"><circle cx="5" cy="4" r="2" stroke="#999" stroke-width="1.2"/><path d="M5 9.5C5 9.5 1.5 6.2 1.5 4a3.5 3.5 0 0 1 7 0C8.5 6.2 5 9.5 5 9.5z" stroke="#999" stroke-width="1.2" fill="none"/></svg>${day.loc}</span> <span class="dots">${dots}</span> </div> </div> <span class="cv">▼</span> </div> <div class="db"><div class="el">${renderEvs(evs)}</div></div>`;
@@ -364,7 +364,7 @@ c.appendChild(card);
 });
 }
 function renderEvs(evs){
-return […evs].sort((a,b)=>toMin(a.tm)-toMin(b.tm)).map(ev=>{
+return [...evs].sort((a,b)=>toMin(a.tm)-toMin(b.tm)).map(ev=>{
 const bar=TC[ev.t]||’#9E9E9E’;
 const chips=(ev.pp||[]).map(p=>`<span class="tg tp">${p}</span>`).join(’’);
 const noTag=ev.no?`<span class="tg tn">${ev.no}</span>`:’’;
