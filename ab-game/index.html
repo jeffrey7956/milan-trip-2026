@@ -27,7 +27,7 @@
       min-height: 100vh;
       font-family: Arial, "PingFang TC", "Microsoft JhengHei", sans-serif;
       color: var(--ink);
-      background: linear-gradient(180deg, var(--decathlon-navy) 0 230px, var(--bg) 230px);
+      background: linear-gradient(180deg, var(--decathlon-navy) 0 260px, var(--bg) 260px);
     }
 
     body::before {
@@ -61,6 +61,7 @@
 
     .badge {
       display: inline-flex;
+      flex-direction: column;
       align-items: center;
       min-height: 32px;
       padding: 6px 10px;
@@ -69,7 +70,16 @@
       color: #ffffff;
       font-size: 13px;
       font-weight: 700;
+      line-height: 1.12;
       border-radius: 4px;
+    }
+
+    .badge small {
+      display: block;
+      margin-top: 2px;
+      font-size: 10px;
+      font-weight: 700;
+      opacity: 0.78;
     }
 
     header {
@@ -82,6 +92,13 @@
       font-size: clamp(32px, 8vw, 58px);
       line-height: 1.05;
       letter-spacing: 0;
+    }
+
+    .title-en {
+      margin-top: 6px;
+      font-size: clamp(20px, 5vw, 34px);
+      font-weight: 800;
+      line-height: 1.1;
     }
 
     .subtitle {
@@ -216,6 +233,14 @@
 
     .rule strong { display: block; font-size: 17px; margin-bottom: 2px; }
 
+    .rule small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
     .shake { animation: shake 0.18s linear; }
 
     @keyframes shake {
@@ -225,7 +250,7 @@
     }
 
     @media (max-width: 520px) {
-      body { background: linear-gradient(180deg, var(--decathlon-navy) 0 220px, var(--bg) 220px); }
+      body { background: linear-gradient(180deg, var(--decathlon-navy) 0 250px, var(--bg) 250px); }
       .page { padding: 18px 12px max(24px, env(safe-area-inset-bottom)); }
       .topbar { align-items: flex-start; }
       .answer-row { grid-template-columns: 1fr; }
@@ -238,13 +263,14 @@
 <body>
   <main class="page">
     <div class="topbar">
-      <div class="badge">DECATHLON WARM-UP</div>
-      <div class="badge">5 CLUES</div>
+      <div class="badge">會前暖身<small>Meeting warm-up</small></div>
+      <div class="badge">5 組線索<small>5 clues</small></div>
     </div>
 
     <header>
       <h1>會前暖身：破解 3 位數密碼</h1>
-      <p class="subtitle">每位數字只用一次。從五組線索推理出答案。</p>
+      <div class="title-en">Crack the 3-digit code</div>
+      <p class="subtitle">每位數字只用一次。Use each digit once. Five clues lead to one answer.</p>
     </header>
 
     <section class="game-panel" aria-label="五組提示">
@@ -253,15 +279,15 @@
 
     <section class="answer-panel" id="answerPanel" aria-label="答案輸入">
       <div class="answer-row">
-        <input id="answerInput" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="例如 359">
-        <button id="submitButton" type="button">驗證答案</button>
+        <input id="answerInput" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="例 / e.g. 359">
+        <button id="submitButton" type="button">驗證 / Check</button>
       </div>
-      <div id="message" class="message info">輸入 3 位不重複數字後驗證。</div>
+      <div id="message" class="message info">輸入 3 位不重複數字。Enter 3 unique digits.</div>
     </section>
 
     <section class="rule-strip" aria-label="規則說明">
-      <div class="rule"><strong>A</strong>數字正確，位置也正確</div>
-      <div class="rule"><strong>B</strong>數字正確，但位置不同</div>
+      <div class="rule"><strong>A</strong>數字正確，位置也正確<small>Right digit, right position</small></div>
+      <div class="rule"><strong>B</strong>數字正確，但位置不同<small>Right digit, wrong position</small></div>
     </section>
   </main>
 
@@ -300,10 +326,10 @@
 
     function validateAnswer(str_value) {
       if (!/^[0-9]{3}$/.test(str_value)) {
-        return "請輸入剛好 3 位數字。";
+        return "請輸入剛好 3 位數字。Enter exactly 3 digits.";
       }
       if (new Set(str_value).size !== 3) {
-        return "數字不能重複，例如 332 不符合規則。";
+        return "數字不能重複，例如 332 不符合規則。Digits cannot repeat.";
       }
       return "";
     }
@@ -346,16 +372,16 @@
         STATE.num_attempts += 1;
         if (str_value === CONFIG.str_answer) {
           STATE.bool_solved = true;
-          showMessage("correct", `答對了，密碼是 ${CONFIG.str_answer}。可以開始會議了。`);
+          showMessage("correct", `答對了，密碼是 ${CONFIG.str_answer}。Correct. The code is ${CONFIG.str_answer}.`);
           el_submitButton.disabled = true;
           el_answerInput.disabled = true;
           return;
         }
 
-        showMessage("error", `還不是答案，這次是 ${getHint(str_value)}，已嘗試 ${STATE.num_attempts} 次。`);
+        showMessage("error", `還不是答案，這次是 ${getHint(str_value)}。Not yet. Attempt ${STATE.num_attempts}.`);
         shakePanel();
       } catch (error) {
-        showMessage("error", "發生錯誤，請重新整理頁面。");
+        showMessage("error", "發生錯誤，請重新整理頁面。Something went wrong. Refresh the page.");
       }
     }
 
