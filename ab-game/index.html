@@ -1,0 +1,317 @@
+<!doctype html>
+<!-- Temporary small project: hosted under milan-trip-2026/ab-game only; do not replace the main Milan trip page. -->
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3-Digit A/B Challenge</title>
+  <style>
+    :root {
+      --ink: #171717;
+      --muted: #626262;
+      --line: #d9d9d9;
+      --panel: #ffffff;
+      --bg: #f4f7f5;
+      --teal: #087f7b;
+      --amber: #f4b942;
+      --red: #d94b3d;
+      --green: #168a4a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, "PingFang TC", "Microsoft JhengHei", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(8, 127, 123, 0.08) 1px, transparent 1px),
+        linear-gradient(rgba(8, 127, 123, 0.08) 1px, transparent 1px),
+        var(--bg);
+      background-size: 32px 32px;
+    }
+
+    .page {
+      width: min(100%, 760px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 24px 18px 32px;
+      display: grid;
+      align-content: center;
+      gap: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 9vw, 64px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .game-panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 18px 50px rgba(30, 36, 36, 0.10);
+    }
+
+    .clue-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .cell {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--line);
+      font-size: clamp(28px, 8vw, 48px);
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cell:nth-child(odd) {
+      border-right: 1px solid var(--line);
+      background: #fbfbfb;
+    }
+
+    .cell:nth-last-child(-n + 2) { border-bottom: 0; }
+
+    .hint {
+      gap: 8px;
+      font-size: clamp(22px, 6vw, 38px);
+    }
+
+    .hint span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      height: 44px;
+      border: 1px solid var(--ink);
+      background: #fff;
+      font-weight: 900;
+    }
+
+    .answer-panel {
+      display: grid;
+      gap: 12px;
+      background: #101615;
+      border-radius: 8px;
+      padding: 16px;
+      color: #fff;
+    }
+
+    .answer-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
+    input {
+      width: 100%;
+      min-height: 52px;
+      border: 0;
+      border-radius: 6px;
+      padding: 0 14px;
+      font-size: 28px;
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    button {
+      min-width: 104px;
+      min-height: 52px;
+      border: 0;
+      border-radius: 6px;
+      background: var(--amber);
+      color: #171717;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: default;
+    }
+
+    .message {
+      min-height: 26px;
+      font-size: 15px;
+      line-height: 1.45;
+      color: #e9efed;
+    }
+
+    .message.correct { color: #8ef2b4; }
+    .message.error { color: #ffb1a8; }
+
+    .rule-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .rule {
+      border-left: 6px solid var(--teal);
+      background: rgba(255, 255, 255, 0.88);
+      padding: 10px 12px;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .rule strong { display: block; font-size: 17px; margin-bottom: 2px; }
+
+    @media (max-width: 520px) {
+      .page { padding: 18px 12px 24px; align-content: start; }
+      .topbar { align-items: flex-start; }
+      .answer-row { grid-template-columns: 1fr; }
+      button { width: 100%; }
+      .rule-strip { grid-template-columns: 1fr; }
+      .cell { min-height: 64px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <div class="badge">A/B CODE GAME</div>
+      <div class="badge">5 RUNS</div>
+    </div>
+
+    <header>
+      <h1>破解 3 位數密碼</h1>
+      <p class="subtitle">每個數字不重複。用五組線索找出唯一答案。</p>
+    </header>
+
+    <section class="game-panel" aria-label="五組提示">
+      <div class="clue-grid" id="clueGrid"></div>
+    </section>
+
+    <section class="answer-panel" aria-label="答案輸入">
+      <div class="answer-row">
+        <input id="answerInput" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="輸入答案">
+        <button id="submitButton" type="button">驗證</button>
+      </div>
+      <div id="message" class="message">輸入 3 位不重複數字後驗證。</div>
+    </section>
+
+    <section class="rule-strip" aria-label="規則說明">
+      <div class="rule"><strong>A</strong>數字正確，位置也正確</div>
+      <div class="rule"><strong>B</strong>數字正確，但位置不同</div>
+    </section>
+  </main>
+
+  <script>
+    const CONFIG = {
+      str_answer: "359",
+      list_clues: [
+        { str_guess: "576", str_hint: "0A 1B" },
+        { str_guess: "687", str_hint: "0A 0B" },
+        { str_guess: "459", str_hint: "2A 0B" },
+        { str_guess: "482", str_hint: "0A 0B" },
+        { str_guess: "325", str_hint: "1A 1B" }
+      ]
+    };
+
+    const STATE = {
+      num_attempts: 0,
+      bool_solved: false
+    };
+
+    const el_clueGrid = document.getElementById("clueGrid");
+    const el_answerInput = document.getElementById("answerInput");
+    const el_submitButton = document.getElementById("submitButton");
+    const el_message = document.getElementById("message");
+
+    function renderClues() {
+      el_clueGrid.innerHTML = CONFIG.list_clues.map((obj_clue) => {
+        const [str_a, str_b] = obj_clue.str_hint.split(" ");
+        return `
+          <div class="cell">${obj_clue.str_guess}</div>
+          <div class="cell hint"><span>${str_a}</span><span>${str_b}</span></div>
+        `;
+      }).join("");
+    }
+
+    function validateAnswer(str_value) {
+      if (!/^[0-9]{3}$/.test(str_value)) {
+        return "請輸入 3 位數字。";
+      }
+      if (new Set(str_value).size !== 3) {
+        return "三個數字不能重複。";
+      }
+      return "";
+    }
+
+    function handleSubmit() {
+      try {
+        if (STATE.bool_solved) return;
+        const str_value = el_answerInput.value.trim();
+        const str_error = validateAnswer(str_value);
+        if (str_error) {
+          el_message.className = "message error";
+          el_message.textContent = str_error;
+          return;
+        }
+
+        STATE.num_attempts += 1;
+        if (str_value === CONFIG.str_answer) {
+          STATE.bool_solved = true;
+          el_message.className = "message correct";
+          el_message.textContent = `答對了，密碼是 ${CONFIG.str_answer}。`;
+          el_submitButton.disabled = true;
+          el_answerInput.disabled = true;
+          return;
+        }
+
+        el_message.className = "message error";
+        el_message.textContent = `還不是答案，已嘗試 ${STATE.num_attempts} 次。`;
+      } catch (error) {
+        el_message.className = "message error";
+        el_message.textContent = "發生錯誤，請重新整理頁面。";
+      }
+    }
+
+    function init() {
+      renderClues();
+      el_submitButton.addEventListener("click", handleSubmit);
+      el_answerInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") handleSubmit();
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
