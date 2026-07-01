@@ -378,7 +378,7 @@
           return;
         }
 
-        showMessage("error", `還不是答案，這次是 ${getHint(str_value)}。Not yet. Attempt ${STATE.num_attempts}.`);
+        showMessage("error", `還不是答案；這次結果是 ${getHint(str_value)}。Not the answer yet; this result is ${getHint(str_value)}. Attempt ${STATE.num_attempts}.`);
         shakePanel();
       } catch (error) {
         showMessage("error", "發生錯誤，請重新整理頁面。Something went wrong. Refresh the page.");
